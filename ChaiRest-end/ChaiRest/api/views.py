@@ -1,78 +1,49 @@
-from django.shortcuts import render
-from django.http.response import JsonResponse
-from models import User, Category, Furniture, Order
-from django.views.decorators.csrf import csrf_exempt
-from .serializers import UserSerializer, CategorySerializer, FurnitureSerializer, OrderSerializer
 from rest_framework import generics
-import json
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.shortcuts import get_object_or_404
+
+from api.models import Category, Furniture
+from api.serializers import UserSerializer, CategorySerializer, FurnitureSerializer, OrderSerializer
+from rest_framework.pagination import LimitOffsetPagination
 
 
 class CategoryListView(generics.ListCreateAPIView):
-    # permission_classes = [IsAuthenticated]
-    queryset = Category.objects.all()
-    serializer_class = CategorySerialaizer
+    serializer_class = UserSerializer
+    permission_classes = (AllowAny,)
+
+    def get_queryset(self):
+        return Category.objects.all()
 
 
 class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
-    # permission_classes = [IsAuthenticated]
-    queryset = Category.objects.all()
-    serializer_class = CourseSerializer
-
-
-class ModuleListView(generics.ListCreateAPIView):
-    # permission_classes = [IsAuthenticated]
-    serializer_class = ModuleSerializer
+    serializer_class = CategorySerializer
+    permission_classes = (AllowAny,)
+    lookup_url_kwarg = 'id'
 
     def get_queryset(self):
-        course_id = self.kwargs.get('pk')
-        print("get", self.kwargs)
-        return Module.objects.filter(course_id=course_id)
-
-    def perform_create(self, serializer):
-        course_id = self.kwargs.get('pk')
-        serializer.save(course_id=course_id)
+        id = self.kwargs['id']
+        return Category.objects.filter(id=id)
 
 
-class ModuleDetailView(generics.RetrieveUpdateDestroyAPIView):
-    # permission_classes = [IsAuthenticated]
-    queryset = Module.objects.all()
-    serializer_class = ModuleSerializer
-    lookup_url_kwarg = 'module_id'
-
-
-class CoursePricingListView(generics.ListCreateAPIView):
-    # permission_classes = [IsAuthenticated]
-    serializer_class = CoursePricingSerializer
+class CategoryFurnitureList(generics.ListAPIView):
+    serializer_class = FurnitureSerializer
 
     def get_queryset(self):
-        course_id = self.kwargs['pk']
-        return CoursePricing.objects.filter(course_id=course_id)
-
-    def perform_create(self, serializer):
-        course_id = self.kwargs.get('pk')
-        serializer.save(course_id=course_id)
+        category_id = self.kwargs.get('id')
+        return Furniture.objects.filter(category_id=category_id)
 
 
-class PricingDetailView(generics.RetrieveUpdateDestroyAPIView):
-    # permission_classes = [IsAuthenticated]
-    queryset = CoursePricing.objects.all()
-    serializer_class = CoursePricingSerializer
-    lookup_url_kwarg = 'pricing_id'
+class FurnitureListView(generics.ListCreateAPIView):
+    serializer_class = FurnitureSerializer
+    permission_classes = (AllowAny,)
+    queryset = Furniture.objects.all()
 
 
-class RegisterView(generics.CreateAPIView):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = UserSerializer
+class FurnitureDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Furniture.objects.all()
+    serializer_class = FurnitureSerializer
+    lookup_field = 'id'
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-        })
-
+    def get_queryset(self):
+        id = self.kwargs['id']
+        return Furniture.objects.filter(id=id)

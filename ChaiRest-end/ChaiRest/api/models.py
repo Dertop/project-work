@@ -1,9 +1,10 @@
 from django.db import models
 
+
 # Create your models here.
 class User(models.Model):
     username = models.CharField(max_length=255)
-    email = models.CharField()
+    email = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
 
     class Meta:
@@ -17,6 +18,8 @@ class User(models.Model):
             'email': self.email,
             'password': self.password,
         }
+
+
 class Category(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -32,12 +35,13 @@ class Category(models.Model):
             'description': self.description,
         }
 
+
 class Furniture(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='furniture')
-    price = models.IntegerField(max_length=255)
+    price = models.IntegerField()
 
     def to_json(self):
         return {
@@ -48,6 +52,7 @@ class Furniture(models.Model):
             'category': self.category.id,
             'price': self.price,
         }
+
 
 class Order(models.Model):
     address = models.TextField(max_length=255)
