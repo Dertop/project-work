@@ -17,11 +17,17 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from api import urls
+from api.views import *
 from rest_framework import routers
 
 router = routers.DefaultRouter()
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include("api.urls")),
+    path('category/', CategoryListView.as_view(), name='category-list'),
+    path('category/<int:id>/', CategoryDetailView.as_view(), name='category-details'),
+    path('category/<int:id>/furniture/', CategoryFurnitureList.as_view(), name='furniture-list'),
+    path('furniture/', FurnitureListView.as_view(), name='furniture-details'),
+    path('furniture/<int:id>', FurnitureDetailView.as_view(), name='furniture-details'),
     path('api-auth/', include('rest_framework.urls')),
 ]
