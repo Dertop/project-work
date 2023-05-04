@@ -8,11 +8,8 @@ from rest_framework.pagination import LimitOffsetPagination
 
 
 class CategoryListView(generics.ListCreateAPIView):
-    serializer_class = UserSerializer
-    permission_classes = (AllowAny,)
-
-    def get_queryset(self):
-        return Category.objects.all()
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 
 class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):

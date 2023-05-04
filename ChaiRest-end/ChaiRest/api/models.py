@@ -23,6 +23,7 @@ class User(models.Model):
 class Category(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
+    image = models.URLField()
 
     class Meta:
         verbose_name = "Category"
@@ -33,13 +34,14 @@ class Category(models.Model):
             'id': self.id,
             'title': self.title,
             'description': self.description,
+            'image': self.image,
         }
 
 
 class Furniture(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField()
+    image = models.URLField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='furniture')
     price = models.IntegerField()
 

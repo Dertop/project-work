@@ -26,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     title = serializers.CharField()
+    image = serializers.CharField()
     description = serializers.CharField()
 
     def create(self, validated_data):
